@@ -1,0 +1,124 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Post {
+  id        Int      @id @default(autoincrement())
+  title     String   @db.VarChar(255)
+  slug      String   @db.VarChar(100)
+  content   String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt @default(now())
+
+  @@map("posts")
+}
+
+model User {
+  id                  Int                  @id @default(autoincrement())
+  name                String
+  email               String               @unique
+  password            String
+  createdAt           DateTime             @default(now())
+  updatedAt           DateTime             @updatedAt @default(now())
+  userProductAccounts UserProductAccount[]
+  transactions        Transaction[]
+
+  @@map("user")
+}
+
+model ProductCategory {
+  id        Int       @id @default(autoincrement())
+  name      String    @unique
+  products  Product[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt @default(now())
+
+  @@map("product_category")
+}
+
+model Product {
+  id           Int                 @id @default(autoincrement())
+  name         String
+  categoryId   Int
+  imageUrl     String?
+  description  String?
+  isFeatured   Boolean             @default(false)
+  category     ProductCategory     @relation(fields: [categoryId], references: [id])
+  packages     ProductPackage[]
+  userAccounts UserProductAccount[]
+  createdAt    DateTime            @default(now())
+  updatedAt    DateTime            @updatedAt @default(now())
+
+  @@map("product")
+}
+
+model ProductPackage {
+  id           Int                @id @default(autoincrement())
+  productId    Int
+  name         String
+  price        Decimal            @db.Decimal(10, 2)
+  value        String
+  description  String?
+  product      Product            @relation(fields: [productId], references: [id])
+  transactions Transaction[]
+  createdAt    DateTime           @default(now())
+  updatedAt    DateTime           @updatedAt @default(now())
+
+  @@map("product_package")
+}
+
+model UserProductAccount {
+  id           Int                @id @default(autoincrement())
+  userId       Int
+  productId    Int
+  accountId    String
+  additional   String?
+  user         User               @relation(fields: [userId], references: [id])
+  product      Product            @relation(fields: [productId], references: [id])
+  transactions Transaction[]
+  createdAt    DateTime           @default(now())
+  updatedAt    DateTime           @updatedAt @default(now())
+
+  @@map("user_product_account")
+}
+
+model Payment {
+  id           Int           @id @default(autoincrement())
+  name         String
+  type         String
+  imageUrl     String?
+  transactions Transaction[]
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt @default(now())
+
+  @@map("payment")
+}
+
+model Transaction {
+  id                   Int                 @id @default(autoincrement())
+  userId               Int
+  productPackageId     Int
+  userProductAccountId Int
+  paymentId            Int
+  invoiceNumber        String              @unique
+  totalPrice           Decimal             @db.Decimal(10, 2)
+  status               TransactionStatus   @default(PENDING)
+  transactionDate      DateTime            @default(now())
+  user                 User                @relation(fields: [userId], references: [id])
+  productPackage       ProductPackage      @relation(fields: [productPackageId], references: [id])
+  userProductAccount   UserProductAccount  @relation(fields: [userProductAccountId], references: [id])
+  payment              Payment             @relation(fields: [paymentId], references: [id])
+
+  @@map("transaction")
+}
+
+enum TransactionStatus {
+  PENDING
+  SUCCESS
+  FAILED
+}

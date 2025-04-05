@@ -1,0 +1,30 @@
+{
+  "name": "geer-hono-api",
+  "scripts": {
+    "dev": "bun run --hot src/index.ts"
+  },
+  "dependencies": {
+    "@prisma/client": "5.13.0",
+    "bcryptjs": "^2.4.3",
+    "hono": "^4.7.5",
+    "hono-openapi": "^0.4.6",
+    "jsonwebtoken": "^9.0.2",
+    "prisma": "5.13.0",
+    "serve-static": "^2.2.0",
+    "swagger-ui-dist": "^5.20.6",
+    "uuid": "^11.1.0",
+    "zod": "^3.24.2"
+  },
+  "prisma": {
+    "seed": "ts-node prisma/seed.ts"
+  },
+  "devDependencies": {
+    "@types/bcryptjs": "^2.4.6",
+    "@types/bun": "latest",
+    "@types/jsonwebtoken": "^9.0.9",
+    "@types/serve-static": "^1.15.7",
+    "@types/swagger-ui-dist": "^3.30.5",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.8.2"
+  }
+}
