@@ -9,7 +9,9 @@ import productRoutes from './productRoutes'
 import transactionRoutes from './transactionRoutes'
 import productPackageRoutes from './productPackageRoutes'
 import paymentRoutes from './paymentRoutes'
+
 const router = new Hono()
+
 
 /** Blog */
 router.route('/blog', blogRoutes)
@@ -23,6 +25,5 @@ router.route('/product-packages', productPackageRoutes)
 
 router.route('/transactions',transactionRoutes)
 router.route('/payments',paymentRoutes)
-
 
 export const Routes = router
